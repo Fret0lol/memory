@@ -6,7 +6,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/login')
-  async login(@Body('token') token): Promise<any> {
-    
+  async login(@Body('token') token: string): Promise<any> {
+    return this.authService.loginGoogle(token);
   }
 }

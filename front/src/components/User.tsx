@@ -3,14 +3,16 @@ import { useStore } from "../store/auth"
 
 const User = ()  => {
   const { authData, setAuthData } = useStore();
+  console.log(authData);
+  
 
   return (
     <div className="container">
       { authData && (
         <>
-          <h1>{ authData.data.name }</h1>
-          <p>{ authData.data.email }</p>
-          <img src={ authData.data.image } alt="profile" />
+          <h1>{ authData.user.name }</h1>
+          <p>{ authData.user.email }</p>
+          <img src={ authData.user.image } alt="profile" />
 
           <button
             onClick={() => {

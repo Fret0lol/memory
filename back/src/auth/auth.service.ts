@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
-import { PrismaClient, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 const client = new OAuth2Client(
@@ -17,43 +16,26 @@ export class AuthService {
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    // const { email, name, picture } = ticket.getPayload();
-    
-    // const data = await this.userService.login({ email, name, image: picture });
+    const { email, name, picture } = ticket.getPayload();
 
-    // return { data, message: 'Success' };
-    return { message: 'Success' };
+    // Unique email
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
 
+    if (!user) {
+      const newUser = await this.prisma.user.create({
+        data: {
+          email: email,
+          name: name,
+          image: picture,
+        },
+      });
+      return { user: newUser, message: 'Success' };
+    } else {
+      return { user: user, message: 'Already exist' };
+    }
   }
 }
-
-// import { Injectable } from '@nestjs/common';
-// import { InjectModel } from '@nestjs/mongoose';
-// import { Model } from 'mongoose';
-// import { User, UserDocument } from 'src/model/user.schema';
-
-// @Injectable()
-// export class UserService {
-//   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-
-//   async login({
-//     email,
-//     name,
-//     image,
-//   }: {
-//     email: string;
-//     name: string;
-//     image: string;
-//   }): Promise<any> {
-//     const user = await this.userModel.findOne({ email: email });
-
-//     if (!user) {
-//       const newUser = new this.userModel({ email, name, image });
-//       await newUser.save();
-//       return newUser;
-//     } else {
-//       console.log(user);
-//       return user;
-//     }
-//   }
-// }

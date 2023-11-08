@@ -16,9 +16,9 @@ export default function Login() {
 							useOneTap
 							onSuccess={async (credentialResponse) => {
 								console.log(credentialResponse);
-								const data = await axios.post("http://localhost:3000/login", {
+								const data = await axios.post("http://localhost:3000/auth/login", {
 									token: credentialResponse.credential,
-								});
+								});								
 								localStorage.setItem("AuthData", JSON.stringify(data.data));
 								setAuthData(data.data);
 							}}

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -9,9 +10,12 @@ const client = new OAuth2Client(
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+  ) {}
 
-  async loginGoogle(token: string) {
+  async loginGoogle(token: string): Promise<{ access_token: string }> {
     const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -33,9 +37,24 @@ export class AuthService {
           image: picture,
         },
       });
-      return { user: newUser, message: 'Success' };
+      const token = await this.signToken(newUser.id, newUser.email);
+
+      return { access_token: token };
     } else {
-      return { user: user, message: 'Already exist' };
+      const token = await this.signToken(user.id, user.email);
+
+      return { access_token: token };
     }
+  }
+
+  signToken(userId: string, email: string): Promise<string> {
+    const payload = {
+      sub: userId,
+      email: email,
+    };
+    return this.jwt.signAsync(payload, {
+      expiresIn: '15m',
+      secret: process.env.JWT_SECRET,
+    });
   }
 }

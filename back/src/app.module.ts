@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './model/user.schema';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -9,8 +10,9 @@ import { User, UserSchema } from './model/user.schema';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    PrismaModule,
+    AuthModule,
+    UserModule,
   ],
 })
 export class AppModule {}

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { AuthDto } from 'src/auth/dto';
 
 describe('App (e2e)', () => {
   let app: INestApplication;
@@ -12,17 +13,30 @@ describe('App (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     await app.init();
+    await app.listen(3000);
   });
 
   afterAll(() => {
     app.close();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  describe('Auth', () => {
+    const dto: AuthDto = {
+      email: 'test@test.fr',
+      password: 'test',
+    };
+
+    describe('Register', () => {
+      it('should throw if email empty', () => {
+        return request(app.getHttpServer())
+          .post('/auth/register')
+          .send(dto)
+          .expect(400);
+      });
+    });
   });
+
+  it('/ (GET)', () => {});
 });

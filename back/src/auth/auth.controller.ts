@@ -18,7 +18,9 @@ export class AuthController {
   }
 
   @Post('/login/google')
-  async loginGoogle(@Body('token') token: string): Promise<any> {
+  async loginGoogle(
+    @Body('token') token: string,
+  ): Promise<{ access_token: string }> {
     return this.authService.loginGoogle(token);
   }
 }

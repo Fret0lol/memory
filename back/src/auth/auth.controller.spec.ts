@@ -56,14 +56,14 @@ describe('AuthController', () => {
 
   describe('Login with Google', () => {
     it('Should call authService.loginGoogle with correct parameter', async () => {
-      const token: { access_token: 'test' } = { access_token: 'test' };
+      const token: { access_token: string } = { access_token: 'test' };
       jest
         .spyOn(authService, 'loginGoogle')
         .mockImplementation(async () => token);
 
       await authController.loginGoogle('test');
 
-      expect(authService.loginGoogle).toHaveBeenCalledWith(token);
+      expect(authService.loginGoogle).toHaveBeenCalledWith('test');
     });
   });
 });

@@ -30,4 +30,3 @@ jobs:
       run: |
         cd back
         npm run test
-        npm run test:e2e

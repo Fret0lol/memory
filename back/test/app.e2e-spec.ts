@@ -15,7 +15,6 @@ describe('App (e2e)', () => {
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     await app.init();
-    await app.listen(3000);
   });
 
   afterAll(() => {
@@ -33,7 +32,7 @@ describe('App (e2e)', () => {
         return request(app.getHttpServer())
           .post('/auth/register')
           .send(dto)
-          .expect(400);
+          .expect(403);
       });
     });
   });

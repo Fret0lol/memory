@@ -1,4 +1,4 @@
-name: Run Back Unit Tests
+name: Run Back Tests E2E
 
 on:
   push:
@@ -30,4 +30,4 @@ jobs:
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
       run: |
         cd back
-        npm run test
+        npm run test:e2e

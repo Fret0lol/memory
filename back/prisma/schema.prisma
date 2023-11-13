@@ -17,4 +17,14 @@ model User {
   password String?
   image String?
   createAt DateTime @default(now())
+  records Record[]
+}
+
+model Record {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  date DateTime
+  time DateTime
+  level Int
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
 }
